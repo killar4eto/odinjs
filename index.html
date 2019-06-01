@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OdinJS - New UI JavaScript Tool</title>
+    <link rel="icon" type="image/png" href="./" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="examples">
+        <button onClick='odin.create({type: "paragraph", size: 30, color: "#ffffff", value: "Test"})'>Create paragraph</button>
+        <button onClick='odin.playing_field.clean()'>Clean field</button>
+    </div>
+
+    <div class="playing_field"></div>
+
+<!-- JavaScripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="./odin.js"></script>
+</body>
+</html>
