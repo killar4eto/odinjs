@@ -1,31 +1,93 @@
 let cache = [];
 let garbage = [];
 let newItem = [];
-
-let iShortCutControlKey = "Control";
-let iShortCutAltKey = "Alt";
-let bIsControlKeyActived = false;
-let bIsAltKeyActived = false;
-
-$(document).keyup(function(e) {
-    if (e.key === iShortCutControlKey) bIsControlKeyActived = false;
-    if (e.key === iShortCutAltKey) bIsAltKeyActived = false;
-}).keydown(function(e) {
-    if (e.key === iShortCutControlKey) bIsControlKeyActived = true;
-    if (e.key === iShortCutAltKey) bIsAltKeyActived = true;
-
-    if (bIsControlKeyActived|| bIsAltKeyActived) {
-        $.each(arrShortCut, function(i) {
-            if (arrShortCut[i].key === e.key) {
-                eval(arrShortCut[i].fx);
-                return;
-            }
-        });
-    }
-});
+let debug = false;
+let toolbar = false;
+const version = "1.0";
 
 odin = {
+    initialize: () => {
+        cache = [];
+        garbage = [];
+        newItem = [];
+        debug = false;
 
+        //Handles shortcuts
+        let iShortCutControlKey = "Control";
+        let iShortCutAltKey = "Alt";
+        let bIsControlKeyActived = {
+            key: 'Control',
+            status: false
+        };
+        let bIsAltKeyActived = {
+            key: 'Alt',
+            status: false
+        };
+
+        $(document).keyup(function(e) {
+            e.preventDefault();
+
+            if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
+            if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
+        }).keydown(function(e) {
+            e.preventDefault();
+
+            if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
+            if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
+
+            if (bIsControlKeyActived || bIsAltKeyActived) {
+                $.each(arrShortCut, function(i) {
+                    if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
+                        eval(arrShortCut[i].fx);
+                        return;
+                    }
+
+                    if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
+                        eval(arrShortCut[i].fx);
+                        return;
+                    }
+                });
+            }
+        });
+
+        //Handle right clicks
+        window.oncontextmenu = (event) => {
+            let x = event.clientX;
+            let y = event.clientY;
+            let target = event.target;
+
+
+            if(target.id.length === 0){
+                //Apply new id
+                target.id = odin.uniqueId();
+            }
+
+            odin.make.draggable(("#"+target.id));
+
+
+            return false;
+        };
+
+        //Toolbar
+        odin.toolbar.render();
+
+        console.log("Running OdinJS v"+version);
+    },
+    debug: {
+        enable: () => { debug = true },
+        disable: () => { debug = false },
+        status: () => { return debug }
+    },
+    catch: {
+        return: (event) => {
+
+            if(odin.debug.status()) {
+                console.log(event);
+            }
+
+            return event;
+        }
+    },
     create: (params) => {
         let type = null;
         let paramsString = [];
@@ -67,12 +129,12 @@ odin = {
             //Clean new item
             newItem = [];
 
-            console.log(type + " has been created.");
-            return type + " has been created.";
+            //Return response
+            odin.catch.return(type + " has been created.");
         }
         else{
-            console.log("WRONG PARAMS!");
-            return "WRONG PARAMS!";
+            //Return response
+            odin.catch.return("WRONG PARAMS!");
         }
     },
     types: (type, id, value) => {
@@ -101,10 +163,12 @@ odin = {
             cache = [];
             garbage = [];
 
-            return "History has been cleared!";
+            //Return response
+            odin.catch.return("History has been cleared!");
         },
         show: () => {
-            return cache;
+            //Return response
+            odin.catch.return(cache);
         },
         add: (event) => {
             event.timestamp = new Date().getTime();
@@ -114,8 +178,8 @@ odin = {
         },
         undo: () => {
             if(cache.length < 1){
-                console.log("Nothing found to undo.");
-                return "Nothing found to undo.";
+                //Return response
+                odin.catch.return("Nothing found to undo.");
             }
 
             //Put to garbage
@@ -124,13 +188,13 @@ odin = {
             //Remove
             cache.pop();
 
-            console.log(odin.cache.show());
-            return odin.cache.show();
+            //Return response
+            odin.cache.show();
         },
         redo: () => {
             if(garbage.length < 1){
-                console.log("Nothing found to redo.");
-                return "Nothing found to redo.";
+                //Return response
+                odin.catch.return("Nothing found to redo.");
             }
 
             //Take from garbage and add to cache
@@ -139,8 +203,8 @@ odin = {
             //Clean the garbage
             garbage = [];
 
-            console.log(odin.cache.show());
-            return odin.cache.show();
+            //Return response
+            odin.cache.show();
         }
     },
     time: {
@@ -156,17 +220,76 @@ odin = {
         }
     },
     uniqueId: () => {
+        if(odin.debug.status()) {
+            console.log("Generated new id: "+"odin_"+odin.time.unix());
+        }
+
         return "odin_"+odin.time.unix();
     },
     playing_field: {
         clean: () => {
+            garbage = [];
+            cache = [];
             $(".playing_field").html("");
+
+            //Return response
+            odin.catch.return("Playground cleared!");
+        }
+    },
+    make: {
+        draggable: (element) => {
+            let state = 'disable';
+
+            //Make it draggable
+            if($(element).is('.ui-draggable')) {
+
+                state = 'disable';
+
+                if($(element).is('.ui-draggable-disabled')){
+                    state = 'disable';
+                }
+                else {
+                    state = 'enable';
+                }
+            }
+            else{
+                state = 'enable';
+            }
+
+            $(element).draggable().draggable(state);
+
+            //Add to cache
+            odin.cache.add({event: 'make', id: element, params: {draggable: state}});
+        },
+        resizable: (element) => {
+
+        },
+        sortable: (element) => {
+
+        }
+    },
+    toolbar: {
+        render: () => {
+            console.log("Rendering OdinJS toolbar...");
+        },
+        show: () => {toolbar = true},
+        hide: () => {toolbar = false}
+    },
+    browser: {
+        refresh: () => {
+            window.location = "./";
         }
     }
 };
 
 //Catch keyboard presses
 const arrShortCut = [
-    { name: 'Undo', key: "z", fx: 'odin.cache.undo()' },
-    { name: 'Redo', key: "x", fx: 'odin.cache.redo()' }
+    { name: 'Undo', key: "z", trigger: 'Alt', fx: 'odin.cache.undo()' },
+    { name: 'Redo', key: "x", trigger: 'Alt', fx: 'odin.cache.redo()' },
+    { name: 'History', key: "h", trigger: 'Control', fx: 'odin.cache.show()' },
+    { name: 'Toolbar', key: "d", trigger: 'Control', fx: 'odin.toolbar.show()'},
+    { name: 'Refresh', key: "r", trigger: 'Control', fx: 'odin.browser.refresh()'}
 ];
+
+//Run odin
+odin.initialize();
