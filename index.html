@@ -18,10 +18,12 @@
 </head>
 <body>
     <div class="examples">
-        <button onClick='odin.create({type: "paragraph", size: 30, color: "#ffffff", value: "Test"})'>Create paragraph</button>
+        <button onClick='odin.create({type: "paragraph", value: "Paragraph here"})'>Create paragraph</button>
+        <button onClick='odin.create({type: "headline", value: "Headline here"})'>Create headline</button>
         <button onClick='odin.playing_field.clean()'>Clean field</button>
         <button onClick='odin.debug.enable()'>Enable debug</button>
         <button onClick='odin.debug.disable()'>Disable debug</button>
+        <button onClick='odin.initialize()'>Initialize OdinJS</button>
     </div>
 
     <div class="playing_field"></div>
