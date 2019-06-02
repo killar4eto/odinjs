@@ -30,23 +30,25 @@ odin = {
             if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
             if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
         }).keydown(function(e) {
-            e.preventDefault();
+            if(e.key !== "F12") {
+                e.preventDefault();
 
-            if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
-            if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
+                if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
+                if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
 
-            if (bIsControlKeyActived || bIsAltKeyActived) {
-                $.each(arrShortCut, function(i) {
-                    if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
-                        eval(arrShortCut[i].fx);
-                        return;
-                    }
+                if (bIsControlKeyActived || bIsAltKeyActived) {
+                    $.each(arrShortCut, function (i) {
+                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
+                            eval(arrShortCut[i].fx);
+                            return;
+                        }
 
-                    if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
-                        eval(arrShortCut[i].fx);
-                        return;
-                    }
-                });
+                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
+                            eval(arrShortCut[i].fx);
+                            return;
+                        }
+                    });
+                }
             }
         });
 
