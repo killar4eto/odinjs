@@ -418,7 +418,7 @@ odin = {
                     aliases: ["img", "image"],
                     description: "Defines an image in an HTML page.",
                     resizable: true,
-                    code: "<img src='#' alt='Image text'/>"
+                    code: "<img src='./no_image.png' alt='Image text' title='Image text'/>"
                 }
             ];
         }
