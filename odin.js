@@ -189,23 +189,9 @@ odin = {
     types: (type, id, value) => {
         type = type.toLowerCase();
 
-        //Creating switch to returns existing types
-        switch(type){
-            //Headline
-            case "headline":
-            case "h":
-                newItem.push("<h2 id='"+id+"'>"+value+"</h2>");
-                break;
+        let bItem = odin.helpers.html(type);
 
-            //Paragraph
-            case "paragraph":
-            case "p":
-                newItem.push("<p id='"+id+"'>"+value+"</p>");
-                break;
-
-            default:
-                newItem.push("<div id='"+id+"'>"+value+"</div>");
-        }
+        newItem.push($(bItem.code).attr('id', id).text(value));
     },
     cache:  {
         clear: () => {
@@ -374,6 +360,57 @@ odin = {
     browser: {
         refresh: () => {
             window.location = "./";
+        }
+    },
+    helpers: {
+        html: (type) => {
+            let tag = null;
+
+            if(typeof(type) !== "undefined" || type !== null){
+                odin.helpers.database().map((item) => {
+                    if(item.type === type || item.aliases.indexOf(type) !== -1){
+                        tag = item;
+                    }
+                });
+            }
+            else{
+                tag = type+" do not exists or is not supported by OdinJS!";
+            }
+
+            //Return result for the tag
+            return tag;
+        },
+        database: () => {
+            return  [
+                {
+                    type: "headline",
+                    aliases: ["h", "headline"],
+                    description: "Represents a level heading in an HTML document.",
+                    resizable: false,
+                    code: "<h2></h2>"
+                },
+                {
+                    type: "paragraph",
+                    aliases: ["p", "paragraph"],
+                    description: "Specifies a paragraph HTML of text.",
+                    resizable: false,
+                    code: "<p></p>"
+                },
+                {
+                    type: "div",
+                    aliases: ["div", "block"],
+                    description: "Container unit that encapsulates other page elements and divides the HTML document into sections.",
+                    resizable: true,
+                    code: "<div></div>"
+                },
+                {
+                    type: "image",
+                    aliases: ["img", "image"],
+                    description: "Defines an image in an HTML page.",
+                    resizable: true,
+                    code: "<img src='#' alt='Image text'/>"
+                }
+            ];
         }
     }
 };
