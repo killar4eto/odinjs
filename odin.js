@@ -215,10 +215,16 @@ odin = {
             if(cache.length < 1){
                 //Return response
                 odin.catch.return("Nothing found to undo.");
+                return;
             }
+
+            //Clean garbage
+            garbage = [];
 
             //Put to garbage
             garbage.push(cache[cache.length - 1]);
+
+            $("#"+cache[cache.length - 1].id).remove();
 
             //Remove
             cache.pop();
@@ -230,10 +236,14 @@ odin = {
             if(garbage.length < 1){
                 //Return response
                 odin.catch.return("Nothing found to redo.");
+                return;
             }
 
             //Take from garbage and add to cache
-            cache = [...cache, ...garbage];
+            cache.concat(garbage);
+
+            //Create again tag
+            odin.create({type: garbage[garbage.length - 1].params[0].value, id: garbage[garbage.length - 1].id, value: garbage[garbage.length - 1].params[1].value});
 
             //Clean the garbage
             garbage = [];
