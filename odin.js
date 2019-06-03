@@ -307,7 +307,29 @@ odin = {
             odin.cache.add({event: 'make', id: element, params: {draggable: state}});
         },
         resizable: (element) => {
+            let state = 'disable';
 
+            //Make it draggable
+            if($(element).is('.ui-resizable')) {
+
+                state = 'disable';
+
+                if($(element).is('.ui-resizable-disabled')){
+                    state = 'disable';
+                }
+                else {
+                    state = 'enable';
+                }
+            }
+            else{
+                state = 'enable';
+            }
+
+
+            $(element).resizable();
+
+            //Add to cache
+            odin.cache.add({event: 'make', id: element, params: {resizable: state}});
         },
         sortable: (element) => {
 
