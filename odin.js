@@ -441,6 +441,13 @@ odin = {
                     description: "Defines an image in an HTML page.",
                     resizable: true,
                     code: "<img src='./no_image.png' alt='Image text' title='Image text'/>"
+                },
+                {
+                    type: "youtube",
+                    aliases: ["youtube", "ytube", "yt"],
+                    description: "Youtube player component",
+                    resizable: true,
+                    code: '<iframe width="560" height="315" src="https://www.youtube.com/embed/oaMJ5ZHjI2Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
                 }
             ];
         }
