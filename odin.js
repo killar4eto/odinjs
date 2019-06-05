@@ -29,31 +29,45 @@ odin = {
             status: false
         };
 
-        $(document).keyup(function(e) {
-            e.preventDefault();
+        // $(document).keyup(function(e) {
+        //     e.preventDefault();
+        //
+        //     if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
+        //     if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
+        // }).keydown(function(e) {
+        //     if(e.key !== "F12") {
+        //         e.preventDefault();
+        //
+        //         if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
+        //         if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
+        //
+        //         if (bIsControlKeyActived || bIsAltKeyActived) {
+        //             $.each(arrShortCut, function (i) {
+        //                 if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
+        //                     eval(arrShortCut[i].fx);
+        //                     return;
+        //                 }
+        //
+        //                 if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
+        //                     eval(arrShortCut[i].fx);
+        //                     return;
+        //                 }
+        //             });
+        //         }
+        //     }
+        // });
 
-            if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
-            if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
-        }).keydown(function(e) {
-            if(e.key !== "F12") {
-                e.preventDefault();
+        //On changing value in text input
+        $(document).on("keyup", "#odin_toolbar_item_value", function() {
+            let value = $(this).val();
+            let id = $(this).parent().find("#odin_toolbar_item_id").text();
 
-                if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
-                if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
-
-                if (bIsControlKeyActived || bIsAltKeyActived) {
-                    $.each(arrShortCut, function (i) {
-                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
-                            eval(arrShortCut[i].fx);
-                            return;
-                        }
-
-                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
-                            eval(arrShortCut[i].fx);
-                            return;
-                        }
-                    });
-                }
+            if(value.length < 1){
+                return false;
+            }
+            else{
+                if(id.length < 1){return}
+                $("#"+id).html(value);
             }
         });
 
@@ -105,6 +119,7 @@ odin = {
             const classesIncluded = typeof(item.attr('class')) !== "undefined" ? item.attr('class') : null;
             const position = item.position();
             const size = {width: item.width(), height: item.height()};
+            const value = item.text();
             let typeItem = null;
 
             //Get the type
@@ -119,6 +134,7 @@ odin = {
             if(toolbar){
                 $("#odin_toolbar_item_id").html(id);
                 $("#odin_toolbar_item_type").html(typeItem);
+                $("#odin_toolbar_item_value").val(value);
                 $("#odin_toolbar_item_position").html("<span>Top: "+position.top+"</span> <span>Left: "+position.left+"</span>");
                 $("#odin_toolbar_item_size").html("<span>Width: "+size.width+"</span> <span>Height: "+size.height+"</span>");
                 $("#odin_toolbar_item_classes").html(classesIncluded);
@@ -362,6 +378,7 @@ odin = {
             html_toolbar += "<h4>Element info</h4>";
             html_toolbar += "<span>Type: </span> <div id='odin_toolbar_item_type'></div>";
             html_toolbar += "<span>ID: </span> <div id='odin_toolbar_item_id'></div>";
+            html_toolbar += '<span>Value: </span> <input type="text" id="odin_toolbar_item_value" name="odin_toolbar_item_value" minlength="4" maxlength="20" size="20">';
             html_toolbar += "<span>Classes: </span> <div id='odin_toolbar_item_classes'></div>";
             html_toolbar += "<span>Position: </span> <div id='odin_toolbar_item_position'></div>";
             html_toolbar += "<span>Size: </span> <div id='odin_toolbar_item_size'></div>";
