@@ -29,33 +29,32 @@ odin = {
             status: false
         };
 
-        // $(document).keyup(function(e) {
-        //     e.preventDefault();
-        //
-        //     if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
-        //     if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
-        // }).keydown(function(e) {
-        //     if(e.key !== "F12") {
-        //         e.preventDefault();
-        //
-        //         if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
-        //         if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
-        //
-        //         if (bIsControlKeyActived || bIsAltKeyActived) {
-        //             $.each(arrShortCut, function (i) {
-        //                 if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
-        //                     eval(arrShortCut[i].fx);
-        //                     return;
-        //                 }
-        //
-        //                 if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
-        //                     eval(arrShortCut[i].fx);
-        //                     return;
-        //                 }
-        //             });
-        //         }
-        //     }
-        // });
+        $(document).keyup(function(e) {
+            if (e.key === iShortCutControlKey) bIsControlKeyActived.status = false;
+            if (e.key === iShortCutAltKey) bIsAltKeyActived.status = false;
+        }).keydown(function(e) {
+            if(e.key !== "F12") {
+
+                if (e.key === iShortCutControlKey) bIsControlKeyActived.status = true;
+                if (e.key === iShortCutAltKey) bIsAltKeyActived.status = true;
+
+                if (bIsControlKeyActived.status || bIsAltKeyActived.status) {
+                    e.preventDefault();
+
+                    $.each(arrShortCut, function (i) {
+                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsControlKeyActived.key) {
+                            eval(arrShortCut[i].fx);
+                            return;
+                        }
+
+                        if (arrShortCut[i].key === e.key && arrShortCut[i].trigger === bIsAltKeyActived.key) {
+                            eval(arrShortCut[i].fx);
+                            return;
+                        }
+                    });
+                }
+            }
+        });
 
         //On changing value in text input
         $(document).on("keyup", "#odin_toolbar_item_value", function() {
